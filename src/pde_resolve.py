@@ -123,7 +123,7 @@ class pde :
             # along the z-axis
             while z > 0 :
                 vx = c1 * u ** (self.m + 1) * (1 - (1 - z/u) ** (self.m + 1))
-                vy = c2 * ((self.q(x)/u) * (z - \
+                vy = -c2 * ((self.q(x)/u) * (z - \
                 (u/(self.m + 1)) * ((1 - z/u) ** (self.m + 1)) - 1))
 
                 self.vx.append(vx)
@@ -190,7 +190,7 @@ class pde :
     #                    Compute Change
     # **********************************************************
 
-    def computeChange(self, dt, nbIterations, frames) :
+    def computeChange(self, dt, nbIterations, showPlot = False, frames = 100) :
         """ Compute the change of a previously computed glacier,
             after some change have been made on the conditions
             - dt : time step
@@ -214,7 +214,7 @@ class pde :
         for t in range(nbIterations) :
             newH = [initialValue]
 
-            for x in range(1, self.n - 1) :
+            for x in range(1, self.n) :
                 hi = listH[-1][x]
                 him1 = listH[-1][x - 1]
                 h = hi - (self.l * dt / self.dx) * (hi ** (self.m + 2) - him1** (self.m + 2)) + \
@@ -226,7 +226,35 @@ class pde :
             self.t.append(t * dt)
 
             # Plotting
-            #if (t%frames == 0) :
-                #plt.plot(self.x[0:self.n-1], newH, label = "t = " + str(t*dt))
+            if (showPlot and t%frames == 0 ) :
+                plt.plot(self.x[0:self.n], newH, label = "t = " + str(t*dt))
 
-        return listH
+        self.results = listH
+
+
+    def plotChange2D(self, skipParameter1, skipParameter2) :
+        result = self.results
+        t, x = np.meshgrid(self.t, self.x)
+        lt = len(self.t)
+        lx = len(self.x)
+        z = np.ones((lt, lx))
+        for i in range(lt) :
+            for j in range(lx) :
+                z[i, j] = result[i][j]
+
+        z = np.transpose(z[0:lt-1, 0:lx-1])
+        z2 = np.transpose(z)
+
+        skip1 = slice(None, None, skipParameter1)
+        skip2 = slice(None, None, skipParameter2)
+        t = t[skip1, skip2]
+        x = x[skip1, skip2]
+        z = z[skip1, skip2]
+
+        fig = plt.pcolormesh(t, x, z, cmap = "inferno")
+        bar = plt.colorbar(fig)
+        plt.title("Evolution of the glacier through time")
+        plt.ylabel("x")
+        plt.xlabel("t")
+        plt.tight_layout()
+        plt.show()

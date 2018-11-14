@@ -15,7 +15,7 @@ xmax = 1                 # Window maximum size
 subplot = False
 
 if (subplot) :
-    myPde = pde(1, m, 0.001, xmax)
+    myPde = pde(1, m, 0.001)
 
     # Init of the q-function
     #myPde.initConstantQ(-1)
@@ -47,15 +47,9 @@ else :
 
     # Init of the q-function
     myPde.initFunctionQ(1, -3, 1, 5)
-
     # Resolving the stationary problem
     myPde.resolveStationary(0, False)
 
     myPde.initFunctionQ(1, -3, 0.5, 4.5)
-    result = np.array(myPde.computeChange(0.0001, 2000, 3000))
-
-    t, x = np.meshgrid(myPde.t, myPde.x)
-
-
-    plt.pcolormesh(t, x, result)
-    plt.show()
+    myPde.computeChange(0.0001, 20000)
+    myPde.plotChange2D(50, 10)
