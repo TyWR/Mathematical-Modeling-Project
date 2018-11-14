@@ -143,10 +143,12 @@ class pde :
     #                    Compute Perturbations
     # **********************************************************
 
-    def computePerturbation(self, initValue, dt, nbIterations, frames) :
+    def computePerturbation(self, amp, sigma, xp, dt, nbIterations, frames) :
         """ Compute the evolution of a perturbation in time, when a small punctual
             perturbation is introduced at x = 0, of amplitude initValue
-            - initValue : Value of the dirac at x = 0
+            - amp : amplitude of the Perturbation
+            - sigma : width of the perturbation
+            - x : location of the perturbation
             - dt : time step
             - nbIteration : Number of time iterations
             - frames : the number of time iterations we skip between each frame we plot
@@ -160,7 +162,9 @@ class pde :
         # Previously computed stationary state
         h = self.u
         # Initialisation of the perturbation with a dirac at x = 0
-        listK = [[initValue]+[0 for i in range(self.n-2)]]
+
+        listK = [[0] + [amp*np.exp(-((x * self.dx - xp) ** 2) / sigma**2) for x in range(self.n-1)]]
+
 
         # We compute the coefficients alpha and beta
         f1 = [self.l * (self.m + 2) * h[i] ** (self.m + 1) for i in range(self.n-1)]
@@ -171,7 +175,7 @@ class pde :
         beta = [f1[i] * dt / self.dx for i in range(self.n - 1)]
 
         for t in range(nbIterations) :
-            newK = [initValue]      # The new value at t=t with k(0,t) = initValue
+            newK = [0]      # The new value at t=t with k(0,t) = initValue
             lastK = listK[-1]       # The last value at t-1
 
             for x in range(1, self.n - 1) :
@@ -184,6 +188,9 @@ class pde :
             # Plotting of the graph
             if (t % frames == 0) :
                 plt.plot(self.x, height, label = "t = " + str(t * dt))
+            plt.title("Evolution of a glacier with a small gaussian perturbation")
+            plt.xlabel("x")
+            plt.ylabel("Height of the glacier")
 
 
     # **********************************************************

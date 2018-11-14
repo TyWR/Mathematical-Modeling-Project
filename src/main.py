@@ -36,20 +36,20 @@ if (subplot) :
     plt.show()
 
 else :
-    # myPde = pde(1, m, 0.001, xmax)
-    # myPde.initConstantQ(-1)
-    # myPde.resolveStationary(1, False)
-    # myPde.computePerturbation(0.1, 0.001, 500, 100)
-    # plt.legend()
-    # plt.show()
-
     myPde = pde(1, m, 0.001)
+    myPde.initConstantQ(-1)
+    myPde.resolveStationary(1, False)
+    myPde.computePerturbation(0.2, 0.0125, 0.025, 0.001, 600, 100)
+    plt.legend()
+    plt.show()
 
-    # Init of the q-function
-    myPde.initFunctionQ(1, -3, 1, 5)
-    # Resolving the stationary problem
-    myPde.resolveStationary(0, False)
-
-    myPde.initFunctionQ(1, -3, 0.5, 4.5)
-    myPde.computeChange(0.0001, 20000)
-    myPde.plotChange2D(50, 10)
+    # myPde = pde(1, m, 0.001)
+    #
+    # # Init of the q-function
+    # myPde.initFunctionQ(1, -3, 1, 5)
+    # # Resolving the stationary problem
+    # myPde.resolveStationary(0, False)
+    #
+    # myPde.initFunctionQ(1, -3, 0.5, 4.5)
+    # myPde.computeChange(0.0001, 20000)
+    # myPde.plotChange2D(50, 10)
